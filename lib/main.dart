@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tche_organiza/pages/main_page.dart';
+import 'package:tche_organiza/pages/consent_gate.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,15 +13,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Tchê Organiza',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green, brightness: Brightness.light),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.green,
+          brightness: Brightness.light,
+        ),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green, brightness: Brightness.dark),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.green,
+          brightness: Brightness.dark,
+        ),
         useMaterial3: true,
       ),
       themeMode: ThemeMode.system,
-      home: MainPage(),
+      home: const ConsentGate(),
     );
   }
 }
