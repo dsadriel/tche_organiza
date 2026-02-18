@@ -1,85 +1,160 @@
-# tche_organiza
+# Tchê Organiza
 
-A new Flutter project.
+> ⚠️ **Aviso importante:** Este aplicativo não possui relação oficial com a UFRGS e é fornecido no estado em que se encontra (as is).
 
+Um aplicativo móvel para estudantes da UFRGS consultarem seus tickets do RU (Restaurante Universitário) e verificarem o cardápio disponível.
 
-### 1. **Android (Play Console)**
+## 📱 O que é
 
-First, ensure you have a keystore file. If you don't have one, create it:
+O **Tchê Organiza** é um aplicativo desenvolvido em Flutter que facilita o acesso a informações do Restaurante Universitário da UFRGS. Com ele, você pode:
 
+- Consultar o saldo e quantidade de tickets do RU disponíveis
+- Visualizar o cardápio do dia dos restaurantes universitários
+- Acessar as informações de forma rápida e prática
+
+O aplicativo utiliza suas credenciais do portal da UFRGS para autenticação. Suas credenciais ficam armazenadas apenas no seu dispositivo e não são enviadas para terceiros.
+
+## ⚡ Funcionalidades
+
+- **Visualização de Tickets**: Consulte a quantidade de tickets disponíveis para almoço e janta
+- **Cardápio do RU**: Veja o cardápio completo dos restaurantes universitários
+- **Autenticação Segura**: Login utilizando suas credenciais do portal UFRGS
+- **Armazenamento Local**: Suas credenciais ficam salvas apenas no seu dispositivo
+- **Modo Claro/Escuro**: Interface adaptável ao tema do sistema
+- **Cache Inteligente**: Informações armazenadas localmente para acesso mais rápido
+
+## 📥 Como instalar?
+
+### Android
+
+1. Acesse o Google Groups do aplicativo (link será fornecido)
+2. Após entrar no grupo, acesse o link da Play Store
+3. Instale o aplicativo normalmente
+
+### iOS
+
+1. Acesse o link do TestFlight (link será fornecido)
+2. Instale o TestFlight caso ainda não tenha
+3. Instale o aplicativo através do TestFlight
+
+## 🛠️ Instruções para desenvolvedores
+
+### Pré-requisitos
+
+- Flutter SDK 3.9.2 ou superior
+- Dart SDK
+- Android Studio / Xcode (para desenvolvimento mobile)
+- Git
+
+### Como baixar e executar localmente
+
+1. Clone o repositório:
 ```bash
-keytool -genkey -v -keystore ~/tche_organiza-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias tche_organiza
+git clone https://github.com/dsadriel/tche_organiza.git
+cd tche_organiza
 ```
 
-
-
-To get your SHA-1 key:
-
+2. Instale as dependências:
 ```bash
-keytool -list -v -keystore ~/tche_organiza-release-key.jks -alias tche_organiza
+flutter pub get
 ```
 
-### Setting Up the Key
+3. Execute o aplicativo:
+```bash
+# Para Android
+flutter run
 
-Create or update `android/key.properties` with the following content:
+# Para iOS (apenas em macOS)
+flutter run -d ios
 
+# Para web
+flutter run -d chrome
+```
+
+### Build para produção
+
+#### Android (App Bundle)
+
+1. Configure o arquivo `android/key.properties` com suas credenciais de keystore:
 ```properties
-storePassword=<your_keystore_password>
-keyPassword=<your_key_password>
+storePassword=<sua_senha_keystore>
+keyPassword=<sua_senha_chave>
 keyAlias=tche_organiza
-storeFile=<path_to_keystore>/tche_organiza-release-key.jks
+storeFile=<caminho_para_keystore>/tche_organiza-release-key.jks
 ```
 
-Replace:
-- `<your_keystore_password>` - The password you set when creating the keystore
-- `<your_key_password>` - The password for the key alias
-- `<path_to_keystore>` - The full path to your keystore file (e.g., `/Users/adsouza/tche_organiza-release-key.jks`)
-
-Then build the app bundle:
-
+2. Execute o build:
 ```bash
-# Clean the project
 flutter clean
-
-# Get dependencies
 flutter pub get
-
-# Build for Android (App Bundle - recommended for Play Console)
 flutter build appbundle --release
-
-# Open the output directory
-open build/app/outputs/bundle/release/
 ```
 
-The app bundle will be located at: `build/app/outputs/bundle/release/app-release.aab`
+O arquivo será gerado em: `build/app/outputs/bundle/release/app-release.aab`
 
-### 2. **iOS (App Store) - Using Xcode**
+#### iOS (App Store)
 
+1. Execute o build:
 ```bash
-# Clean the project
 flutter clean
-
-# Get dependencies
 flutter pub get
-
-# Build the iOS app (this prepares it for Xcode)
 flutter build ios --release
-
-# Open the project in Xcode
 open ios/Runner.xcworkspace
 ```
 
-Once Xcode opens:
-1. Select "Any iOS Device" or "Generic iOS Device" as the build target
-2. Go to **Product** → **Archive**
-3. Once the archive completes, the Organizer window will open
-4. Select your archive and click **Distribute App**
-5. Follow the prompts to upload to App Store Connect
+2. No Xcode:
+   - Selecione "Generic iOS Device" como target
+   - Vá em **Product** → **Archive**
+   - Distribua o app através do **Organizer**
 
-### 3. **Additional Notes**
+### Estrutura do Projeto
 
-Before building, make sure to:
-- Configure your `android/key.properties` file with keystore details
-- Ensure code signing is configured in Xcode (Team, Bundle Identifier, etc.)
-- Update version numbers in pubspec.yaml if needed (currently at `1.0.0+3`)
-- Test on real devices before submitting
+```
+lib/
+├── main.dart              # Ponto de entrada do aplicativo
+├── models/                # Modelos de dados
+├── pages/                 # Telas do aplicativo
+│   ├── components/        # Componentes reutilizáveis
+│   ├── consent_gate.dart  # Tela de termos e condições
+│   ├── login.dart         # Tela de login
+│   ├── main_page.dart     # Tela principal
+│   └── ru_menu_page.dart  # Tela do cardápio
+└── services/              # Serviços e APIs
+    ├── credential_storage.dart
+    └── ru_ticket.dart
+```
+
+### Dependências Principais
+
+- `dio`: Cliente HTTP para requisições
+- `shared_preferences`: Armazenamento local de dados
+- `html`: Parser HTML para extração de dados
+- `cookie_jar`: Gerenciamento de cookies para autenticação
+- `intl`: Internacionalização e formatação
+
+## 📄 Licença e Contato
+
+### Licença
+
+Este projeto é distribuído sob uma licença de código aberto. Consulte o repositório para mais detalhes sobre a licença aplicável.
+
+### Contato
+
+- **Repositório**: [github.com/dsadriel/tche_organiza](https://github.com/dsadriel/tche_organiza)
+- **Issues**: Para reportar bugs ou sugerir melhorias, abra uma issue no GitHub
+- **Desenvolvedor**: [@dsadriel](https://github.com/dsadriel)
+
+### Importante
+
+- Este aplicativo **não possui relação oficial** com a Universidade Federal do Rio Grande do Sul (UFRGS)
+- O aplicativo é fornecido **"como está" (as is)**, sem garantias de qualquer tipo
+- As credenciais são armazenadas apenas localmente no dispositivo do usuário
+- Use por sua conta e risco
+
+## 🙏 Agradecimentos
+
+Este projeto foi desenvolvido para fins de estudo e para facilitar a vida dos estudantes da UFRGS. Agradecemos a todos que contribuem e utilizam o aplicativo.
+
+---
+
+**Versão atual**: 1.0.0+1
