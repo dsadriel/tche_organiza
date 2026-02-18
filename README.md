@@ -27,13 +27,13 @@ O aplicativo utiliza suas credenciais do portal da UFRGS para autenticação. Su
 
 ### Android
 
-1. Acesse o Google Groups do aplicativo (link será fornecido)
+1. Acesse o Google Groups do aplicativo (link em breve)
 2. Após entrar no grupo, acesse o link da Play Store
 3. Instale o aplicativo normalmente
 
 ### iOS
 
-1. Acesse o link do TestFlight (link será fornecido)
+1. Acesse o link do [TestFlight](https://testflight.apple.com/join/EmJCRjn4)
 2. Instale o TestFlight caso ainda não tenha
 3. Instale o aplicativo através do TestFlight
 
@@ -71,41 +71,6 @@ flutter run -d ios
 flutter run -d chrome
 ```
 
-### Build para produção
-
-#### Android (App Bundle)
-
-1. Configure o arquivo `android/key.properties` com suas credenciais de keystore:
-```properties
-storePassword=<sua_senha_keystore>
-keyPassword=<sua_senha_chave>
-keyAlias=tche_organiza
-storeFile=<caminho_para_keystore>/tche_organiza-release-key.jks
-```
-
-2. Execute o build:
-```bash
-flutter clean
-flutter pub get
-flutter build appbundle --release
-```
-
-O arquivo será gerado em: `build/app/outputs/bundle/release/app-release.aab`
-
-#### iOS (App Store)
-
-1. Execute o build:
-```bash
-flutter clean
-flutter pub get
-flutter build ios --release
-open ios/Runner.xcworkspace
-```
-
-2. No Xcode:
-   - Selecione "Generic iOS Device" como target
-   - Vá em **Product** → **Archive**
-   - Distribua o app através do **Organizer**
 
 ### Estrutura do Projeto
 
@@ -132,29 +97,8 @@ lib/
 - `cookie_jar`: Gerenciamento de cookies para autenticação
 - `intl`: Internacionalização e formatação
 
-## 📄 Licença e Contato
-
-### Licença
-
-Este projeto é distribuído sob uma licença de código aberto. Consulte o repositório para mais detalhes sobre a licença aplicável.
-
-### Contato
-
-- **Repositório**: [github.com/dsadriel/tche_organiza](https://github.com/dsadriel/tche_organiza)
-- **Issues**: Para reportar bugs ou sugerir melhorias, abra uma issue no GitHub
-- **Desenvolvedor**: [@dsadriel](https://github.com/dsadriel)
-
 ### Importante
 
 - Este aplicativo **não possui relação oficial** com a Universidade Federal do Rio Grande do Sul (UFRGS)
 - O aplicativo é fornecido **"como está" (as is)**, sem garantias de qualquer tipo
 - As credenciais são armazenadas apenas localmente no dispositivo do usuário
-- Use por sua conta e risco
-
-## 🙏 Agradecimentos
-
-Este projeto foi desenvolvido para fins de estudo e para facilitar a vida dos estudantes da UFRGS. Agradecemos a todos que contribuem e utilizam o aplicativo.
-
----
-
-**Versão atual**: 1.0.0+1
