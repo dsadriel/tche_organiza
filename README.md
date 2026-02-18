@@ -157,4 +157,4 @@ Este projeto foi desenvolvido para fins de estudo e para facilitar a vida dos es
 
 ---
 
-**Versão atual**: 1.0.0
+**Versão atual**: 1.0.0+1
