@@ -31,6 +31,7 @@ class RUTicketService {
   final Dio _dio;
   final CookieJar _cookieJar;
   var isLogged = false;
+  String? _loggedUser;
 
   RUTicketService._internal()
     : _cookieJar = CookieJar(),
@@ -53,6 +54,9 @@ class RUTicketService {
   Future<bool> login({required String usuario, required String senha}) async {
     const loginPath = '/login';
 
+    // Ensure we are logged out before attempting a new login
+    await logout();
+
     // Step 1: initialize session cookies
     await _dio.get(loginPath);
 
@@ -69,6 +73,9 @@ class RUTicketService {
     );
 
     isLogged = response.statusCode == 302;
+    if (isLogged) {
+      _loggedUser = usuario;
+    }
     return isLogged;
   }
 
@@ -76,6 +83,7 @@ class RUTicketService {
   Future<void> logout() async {
     await _cookieJar.deleteAll();
     isLogged = false;
+    _loggedUser = null;
   }
 
   Future<Map<String, int>> fetchTicketCounts() async {
@@ -97,6 +105,11 @@ class RUTicketService {
     final match = urlPattern.firstMatch(responseData);
 
     if (match == null) {
+      // If we are on the RU page but can't find the print link, 
+      // it most likely means there are no tickets available.
+      if (responseData.contains('RU') || responseData.contains('Tiquete')) {
+        return {};
+      }
       throw Exception('Could not find ticket URL in response');
     }
 
@@ -113,14 +126,25 @@ class RUTicketService {
 
     final Map<String, int> result = {};
 
-    final elements = document.querySelectorAll('#yw0 tr td:first-child');
+    final rows = document.querySelectorAll('#yw0 tr');
 
-    for (final element in elements) {
-      final text = element.text.trim();
+    for (final row in rows) {
+      final data = row.querySelectorAll('td');
+      
+      // 1. Safety Check: Ensure the row actually has the columns you expect
+      if (data.length < 5) continue;
 
-      if (text.isEmpty) continue;
+      // 2. Cleanup: Use trim() to remove hidden newlines or spaces from the HTML
+      final ticketNumber = data[0].text.trim();
+      final statusText = data[4].text.trim();
+      
+      // 3. Logic: Check availability
+      final isAvailable = statusText == 'Dispon�vel';
 
-      result[text] = (result[text] ?? 0) + 1;
+      if (ticketNumber.isEmpty || !isAvailable) continue;
+
+      // 4. Update Result
+      result[ticketNumber] = (result[ticketNumber] ?? 0) + 1;
     }
 
     return result;
@@ -137,7 +161,8 @@ class RUTicketService {
     }
 
     try {
-      if (!isLogged) {
+      // Ensure we are logged in with the correct user
+      if (!isLogged || _loggedUser != usuario) {
         await login(usuario: usuario, senha: senha);
         if (!isLogged) {
           throw Exception('Invalid credentials');
@@ -145,11 +170,11 @@ class RUTicketService {
       }
 
       final fresh = await _fetchTicketCountsFromApi();
+      print(fresh);
       await _saveCachedTicketCounts(usuario, fresh);
 
-      if (cached == null || !_mapsEqual(cached, fresh)) {
-        yield TicketCountsResponse(ticketCounts: fresh, isFromCache: false);
-      }
+      // Always yield the fresh data to ensure the UI is up to date and cache is overwritten
+      yield TicketCountsResponse(ticketCounts: fresh, isFromCache: false);
     } catch (e) {
       if (cached == null || cached.isEmpty) {
         rethrow;

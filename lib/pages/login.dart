@@ -46,6 +46,7 @@ class _CredentialsLoginViewState extends State<CredentialsLoginView> {
 
     try {
       await CredentialsStorage.clear();
+      await _service.logout();
       if (!mounted) return;
 
       final messenger = ScaffoldMessenger.of(context);
