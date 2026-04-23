@@ -38,10 +38,16 @@ class _RuMenuSectionState extends State<RuMenuSection> {
   void initState() {
     super.initState();
     _bindController();
-    _selectedDay = DateFormat.EEEE().format(DateTime.now()).toLowerCase();
+
+    final now = DateTime.now();
+    _selectedDay = DateFormat.EEEE().format(now).toLowerCase();
     _selectedDay = ['sunday', 'saturday'].contains(_selectedDay)
         ? 'monday'
         : _selectedDay;
+
+    // Select dinner if it's 14h or later
+    _selectedMeal = now.hour >= 14 ? 1 : 0;
+
     _menuDataFuture = _fetchMenuData();
   }
 
@@ -159,15 +165,18 @@ class _RuMenuSectionState extends State<RuMenuSection> {
               }).toList(),
             ),
             const SizedBox(height: 12),
-            SegmentedButton<int>(
-              segments: const [
-                ButtonSegment(value: 0, label: Text('Almoço')),
-                ButtonSegment(value: 1, label: Text('Jantar')),
-              ],
-              selected: {_selectedMeal},
-              onSelectionChanged: (selection) {
-                setState(() => _selectedMeal = selection.first);
-              },
+            SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<int>(
+                segments: const [
+                  ButtonSegment(value: 0, label: Text('Almoço')),
+                  ButtonSegment(value: 1, label: Text('Jantar')),
+                ],
+                selected: {_selectedMeal},
+                onSelectionChanged: (selection) {
+                  setState(() => _selectedMeal = selection.first);
+                },
+              ),
             ),
             const SizedBox(height: 12),
             if (menuOptions.isEmpty)

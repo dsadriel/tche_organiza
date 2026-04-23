@@ -41,6 +41,7 @@ dependencies:
   dio_cookie_manager: ^3.3.0
   html: ^0.15.6
   shared_preferences: ^2.5.4
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

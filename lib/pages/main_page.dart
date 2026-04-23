@@ -51,15 +51,16 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       body: SafeArea(
+        bottom: false,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
           children: [
             RuTicketsSection(controller: _ticketsController),
             const SizedBox(height: 20),
             RuMenuSection(controller: _menuController),
             const SizedBox(height: 24),
             Text(
-              'Este app não tem relação oficial com a UFRGS e é fornecido no estado em que se encontra (as is).',
+              'Este é um projeto acadêmico independente e não possui vínculo oficial com a UFRGS.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,

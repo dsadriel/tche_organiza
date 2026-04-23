@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:tche_organiza/pages/login.dart';
 import 'package:tche_organiza/services/credential_storage.dart';
 import 'package:tche_organiza/services/ru_ticket.dart';
@@ -120,6 +121,19 @@ class _RuTicketsSectionState extends State<RuTicketsSection> {
     _loadTickets();
   }
 
+  Future<void> _openPurchaseLink() async {
+    final url = Uri.parse(
+      'https://www1.ufrgs.br/CatalogoServicos/servicos/acesso-servico?servico=4797',
+    );
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Não foi possível abrir o link de compra')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -137,11 +151,22 @@ class _RuTicketsSectionState extends State<RuTicketsSection> {
               child: Card(
                 elevation: 0,
                 child: ListTile(
-                  title: Text(entry.key),
+                  title: Text(
+                    entry.key,
+                    style: textTheme.titleLarge?.copyWith(
+                      fontFamily: 'monospace',
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('${entry.value} usos', style: textTheme.titleMedium),
+                      Text(
+                        '${entry.value} usos',
+                        style: textTheme.titleMedium?.copyWith(
+                          fontFamily: 'monospace',
+                        ),
+                      ),
                       if (_loading) ...[
                         const SizedBox(width: 8),
                         const SizedBox(
@@ -177,15 +202,21 @@ class _RuTicketsSectionState extends State<RuTicketsSection> {
             color: colorScheme.errorContainer,
             onColor: colorScheme.onErrorContainer,
           )
-        else
+        else if (_credentialsMissing)
           _MessageCard(
-            message: _credentialsMissing
-                ? 'Credenciais não informadas'
-                : 'Nenhum ticket encontrado',
+            message: 'Credenciais não informadas',
             icon: Icons.info_outline,
             color: colorScheme.surfaceContainerHighest,
             onColor: colorScheme.onSurfaceVariant,
-            onTap: _credentialsMissing ? _openCredentialsSheet : null,
+            onTap: _openCredentialsSheet,
+          )
+        else
+          _MessageCard(
+            message: 'Seus tickets acabaram, clique aqui para comprar',
+            icon: Icons.shopping_cart_outlined,
+            color: colorScheme.primaryContainer,
+            onColor: colorScheme.onPrimaryContainer,
+            onTap: _openPurchaseLink,
           ),
       ],
     );
